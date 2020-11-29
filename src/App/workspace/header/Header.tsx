@@ -1,13 +1,11 @@
 import React from "react";
 import TopBar from "./top-bar/TopBar";
 import SearchBar from "./search-bar/SearchBar";
-import { useFilters } from '../../providers/FiltersProvider';
 
 const Header = () => {
-
   return (
     <div className="flex justify-between items-center">
-      <div className="text-gray-500 text-3xl">Discover</div>
+      <div className="text-gray-300 text-4xl font-thin">Discover</div>
       <TopBar />
       <SearchBar />
     </div>

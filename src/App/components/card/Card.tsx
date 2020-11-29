@@ -17,7 +17,7 @@ const CardComp: React.FC<Props> = (props) => (
       HeaderImage : {
         style : {
           height: "230px",
-          width: "180px",
+          width: "280px",
         }
       }
     }}

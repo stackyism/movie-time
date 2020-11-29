@@ -1,4 +1,5 @@
 import { Filter } from "../types";
+import {BASE_URL, API_KEY} from './constants';
 
 const APIKeysMap: Record<string, string> = {
   sort: "sort_by",
@@ -7,10 +8,6 @@ const APIKeysMap: Record<string, string> = {
   endDate: "release_date.lte",
   rating: "vote_average.gte",
 };
-
-const BASE_URL = "https://api.themoviedb.org/3/";
-
-const API_KEY = "3a94078fb34b772a31d9a1348035bed7";
 
 export const buildQuery = (filters: Filter) => {
   let url = `${BASE_URL}`;

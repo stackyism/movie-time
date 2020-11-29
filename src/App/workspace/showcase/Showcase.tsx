@@ -1,83 +1,29 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React  from "react";
 import CardComp from "../../components/card/Card";
-import { useFilters } from "../../providers/FiltersProvider";
-import { buildQuery, fetchData } from "../../../api/queryBuilder";
-import { APIResponse } from "../../../types";
+import { useQuery } from "../../../hooks/useQuery";
 
-const movies = [
-  {
-    imageUrl:
-      "https://images-na.ssl-images-amazon.com/images/I/71VkjnT9UvL._SY550_.jpg",
-    name: "Wake up sid",
-  },
-  {
-    imageUrl:
-      "https://images-na.ssl-images-amazon.com/images/I/71VkjnT9UvL._SY550_.jpg",
-    name: "Wake up sid",
-  },
-  {
-    imageUrl:
-      "https://images-na.ssl-images-amazon.com/images/I/71VkjnT9UvL._SY550_.jpg",
-    name: "Wake up sid",
-  },
-  {
-    imageUrl:
-      "https://images-na.ssl-images-amazon.com/images/I/71VkjnT9UvL._SY550_.jpg",
-    name: "Wake up sid",
-  },
-  {
-    imageUrl:
-      "https://images-na.ssl-images-amazon.com/images/I/71VkjnT9UvL._SY550_.jpg",
-    name: "Wake up sid",
-  },
-  {
-    imageUrl:
-      "https://images-na.ssl-images-amazon.com/images/I/71VkjnT9UvL._SY550_.jpg",
-    name: "Wake up sid",
-  },
-  {
-    imageUrl:
-      "https://images-na.ssl-images-amazon.com/images/I/71VkjnT9UvL._SY550_.jpg",
-    name: "Wake up sid",
-  },
-  {
-    imageUrl:
-      "https://images-na.ssl-images-amazon.com/images/I/71VkjnT9UvL._SY550_.jpg",
-    name: "Wake up sid",
-  },
-  {
-    imageUrl:
-      "https://images-na.ssl-images-amazon.com/images/I/71VkjnT9UvL._SY550_.jpg",
-    name: "Wake up sid",
-  },
-  {
-    imageUrl:
-      "https://images-na.ssl-images-amazon.com/images/I/71VkjnT9UvL._SY550_.jpg",
-    name: "Wake up sid",
-  },
-];
 const ShowCase = () => {
-  const { filters } = useFilters();
-  const [data, setData] = useState<APIResponse>({});
-
-  useEffect(() => {
-    fetchData(filters).then(setData);
-  }, [filters, setData]);
+  const data = useQuery();
 
   console.log("wow data", data);
   return (
     <div className="flex flex-wrap overflow-y-auto">
-      {(data.results || []).map((movie) => (
-        <div className="mb-5" key={movie.id}>
+      {(data.results || []).map((datum) => (
+        <div className="mb-5" key={datum.id}>
           <CardComp
-            imageUrl={`https://image.tmdb.org/t/p/w300${movie.poster_path}`}
+            imageUrl={
+              datum.poster_path
+                ? `https://image.tmdb.org/t/p/w300${datum.poster_path}`
+                : `https://picsum.photos/200/300?random=${Math.random().toString(36).substr(2, 9)}`
+            }
           >
-            <div className="flex flex-col">
+            <div className="flex flex-col items-center justify-center">
               <div
                 className="text-clr01 flex overflow-hidden truncate"
                 style={{ maxWidth: "150px" }}
               >
-                {movie.title}
+                {/*//@ts-ignore*/}
+                {datum.title || datum.name}
               </div>
             </div>
           </CardComp>
