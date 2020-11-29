@@ -6,6 +6,8 @@ export type Filter = {
   startDate?: Date;
   endDate?: Date;
   rating?: number;
+  ratingLTE?: number;
+  keyword?: string;
 };
 
 export type Result =

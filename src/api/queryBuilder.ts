@@ -1,12 +1,23 @@
 import { Filter } from "../types";
-import {BASE_URL, API_KEY} from './constants';
+import { BASE_URL, API_KEY } from "./constants";
 
-const APIKeysMap: Record<string, string> = {
+const MoviesAPIKeysMap: Record<string, string> = {
   sort: "sort_by",
   genres: "with_genres",
   startDate: "release_date.gte",
   endDate: "release_date.lte",
   rating: "vote_average.gte",
+  ratingLTE: "vote_average.lte",
+  keyword: "query",
+};
+const TvAPIKeysMap: Record<string, string> = {
+  sort: "sort_by",
+  genres: "with_genres",
+  startDate: "air_date.gte",
+  endDate: "air_date.lte",
+  rating: "vote_average.gte",
+  ratingLTE: "vote_average.lte",
+  keyword: "query",
 };
 
 export const buildQuery = (filters: Filter) => {
@@ -14,12 +25,23 @@ export const buildQuery = (filters: Filter) => {
   if (filters.sort === "trending") {
     return url + `trending/${filters.type}/day?api_key=${API_KEY}`;
   }
-  url = url + `discover/${filters.type}?api_key=${API_KEY}&language=en-US&page=1`;
+  if (filters.keyword) {
+    return (
+      url + `search/${filters.type}?api_key=${API_KEY}&query=${filters.keyword}`
+    );
+  }
+  url =
+    url + `discover/${filters.type}?api_key=${API_KEY}&language=en-US&page=1`;
   const filterQueries = Object.entries(filters).reduce((acc, filter) => {
     const [key, value] = filter;
-    const apiQueryKey = APIKeysMap[key];
-    if (apiQueryKey && value !== 'trending') {
-      acc = `&${apiQueryKey}=${value}`;
+    const apiQueryKey =
+      filters.type === "movie" ? MoviesAPIKeysMap[key] : TvAPIKeysMap[key];
+    if (apiQueryKey && value && value !== "trending") {
+      if (key === "sort") {
+        acc = acc + `&${apiQueryKey}=${value}.${filters.order}`;
+      } else {
+        acc = acc + `&${apiQueryKey}=${value}`;
+      }
     }
     return acc;
   }, "");

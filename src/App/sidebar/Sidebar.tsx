@@ -1,34 +1,46 @@
 import React, { useCallback, useState } from "react";
 import { Select } from "baseui/select";
+import { StarRating } from "baseui/rating";
 import { FormControl } from "baseui/form-control";
 import { useFilters } from "../providers/FiltersProvider";
 import { useGenres } from "../../hooks/useGenres";
+import { useYears } from "../../hooks/useYears";
 
 const TypesMap = {
   movie: { id: "movie", label: "Movie" },
   tv: { id: "tv", label: "TV Shows" },
 };
 
-const years = [2019, 2020];
-
 const Sidebar = () => {
   const { filters, updateFilter } = useFilters();
   const [selectedGenre, setSelectedGenre] = useState();
-  const [dates, setDates] = useState({
-    startDate: undefined,
-    endDate: undefined,
-  });
+  const { yearOptions, setDates, dates } = useYears();
   const genres = useGenres();
+
   const handleChange = useCallback(
-    (changeKey, { option }) => {
-      updateFilter({ [changeKey]: option.id });
+    (changeKey, { option, value }) => {
       switch (changeKey) {
-        case "genres": {
-          return setSelectedGenre(option);
+        case "type": {
+          setSelectedGenre(undefined);
+          return updateFilter({ type: option?.id, genres: undefined });
         }
+        case "genres": {
+          updateFilter({ [changeKey]: option?.id });
+          return setSelectedGenre(value);
+        }
+        case "startDate":
+        case "endDate":
+          updateFilter({
+            [changeKey]: option?.id ? `${option.id}-01-01` : undefined,
+          });
+          return setDates({ [changeKey]: value });
+        case "rating":
+          return updateFilter({ rating: value, ratingLTE: value });
+        default:
+          return updateFilter({ [changeKey]: option?.id });
       }
     },
-    [filters, updateFilter]
+    [filters, updateFilter, setDates]
   );
   return (
     <div
@@ -47,7 +59,6 @@ const Sidebar = () => {
           label="Type"
         >
           <Select
-            id="genres"
             clearable={false}
             options={Object.values(TypesMap)}
             value={[TypesMap[filters.type]]}
@@ -60,10 +71,9 @@ const Sidebar = () => {
           label="Genre"
         >
           <Select
-            clearable
+            id="genres"
             options={genres}
             labelKey="name"
-            searchable={false}
             onChange={handleChange.bind(null, "genres")}
             value={selectedGenre}
             size="compact"
@@ -76,10 +86,8 @@ const Sidebar = () => {
               label="Year"
             >
               <Select
-                options={years.map((year) => ({
-                  id: year,
-                  label: String(year),
-                }))}
+                options={yearOptions}
+                value={dates.startDate}
                 onChange={handleChange.bind(null, "startDate")}
                 size="compact"
               />
@@ -89,16 +97,25 @@ const Sidebar = () => {
           <div>
             <FormControl>
               <Select
-                options={years.map((year) => ({
-                  id: year,
-                  label: String(year),
-                }))}
+                options={yearOptions}
+                value={dates.endDate}
                 onChange={handleChange.bind(null, "endDate")}
                 size="compact"
               />
             </FormControl>
           </div>
         </div>
+        <FormControl
+          label="Rating"
+          overrides={{ Label: { style: { color: "white" } } }}
+        >
+          <StarRating
+            numItems={5}
+            onChange={handleChange.bind(null, "rating")}
+            size={22}
+            value={filters.rating}
+          />
+        </FormControl>
       </div>
     </div>
   );
