@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useFilters } from '../App/providers/FiltersProvider';
+import { useFilters } from '../app/providers/FiltersProvider';
 import { APIResponse } from '../types';
 import { fetchData } from '../api/queryBuilder';
 

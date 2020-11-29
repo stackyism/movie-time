@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
-import { useFilters } from "../App/providers/FiltersProvider";
+import { useFilters } from "../app/providers/FiltersProvider";
 import { MOVIE_GENRES_URL, TV_GENRES_URL } from "../api/constants";
 
 const useMovieGenres = () => {
